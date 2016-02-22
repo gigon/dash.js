@@ -450,6 +450,11 @@ function ProtectionController(config) {
                 var serverURL = protData.serverURL;
                 if (typeof serverURL === 'string' && serverURL !== '') {
                     url = serverURL;
+
+                    // gg TBD support redirect to bypass XHR cross domain -->
+                    url = url.replace('{host}', window.location.host);
+                    // <-- gg TBD support redirect to bypass XHR cross domain
+
                 } else if (typeof serverURL === 'object' && serverURL.hasOwnProperty(messageType)) {
                     url = serverURL[messageType];
                 }

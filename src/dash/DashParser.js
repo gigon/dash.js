@@ -388,6 +388,15 @@ function DashParser(/*config*/) {
 
         try {
             //log("Converting from XML.");
+
+            // TBD gg workaround -->
+            if (data.indexOf('xmlns:mspr=') < 0) {
+                log('gg: adding mspr namespace to XML declaration');
+                var position = data.indexOf('xmlns:cenc=');
+                data = [data.slice(0, position), 'xmlns:mspr="urn:microsoft:playready" ', data.slice(position)].join('');
+            }
+            // --> TBD gg workaround
+
             manifest = converter.xml_str2json(data);
 
             if (!manifest) {

@@ -1,37 +1,37 @@
 'use strict';
 
 angular.module('DashSourcesService', ['ngResource']).
-    factory('Sources', function($resource){
+    factory('Sources', function ($resource) {
         return $resource('app/sources.json', {}, {
-            query: {method:'GET', isArray:false}
+            query: { method: 'GET', isArray: false }
         });
     });
 
 angular.module('DashNotesService', ['ngResource']).
-    factory('Notes', function($resource){
+    factory('Notes', function ($resource) {
         return $resource('app/notes.json', {}, {
-            query: {method:'GET', isArray:false}
+            query: { method: 'GET', isArray: false }
         });
     });
 
 angular.module('DashContributorsService', ['ngResource']).
-    factory('Contributors', function($resource){
+    factory('Contributors', function ($resource) {
         return $resource('app/contributors.json', {}, {
-            query: {method:'GET', isArray:false}
+            query: { method: 'GET', isArray: false }
         });
     });
 
 angular.module('DashPlayerLibrariesService', ['ngResource']).
-    factory('PlayerLibraries', function($resource){
+    factory('PlayerLibraries', function ($resource) {
         return $resource('app/player_libraries.json', {}, {
-            query: {method:'GET', isArray:false}
+            query: { method: 'GET', isArray: false }
         });
     });
 
 angular.module('DashShowcaseLibrariesService', ['ngResource']).
-    factory('ShowcaseLibraries', function($resource){
+    factory('ShowcaseLibraries', function ($resource) {
         return $resource('app/showcase_libraries.json', {}, {
-            query: {method:'GET', isArray:false}
+            query: { method: 'GET', isArray: false }
         });
     });
 
@@ -44,7 +44,7 @@ var app = angular.module('DashPlayer', [
     'angularTreeview'
 ]);
 
-app.directive('chart', function() {
+app.directive('chart', function () {
     return {
         restrict: 'E',
         link: function (scope, elem, attrs) {
@@ -63,13 +63,13 @@ app.directive('chart', function() {
                 };
 
             // If the data changes somehow, update it in the chart
-            scope.$watch('bufferData', function(v) {
+            scope.$watch('bufferData', function (v) {
                 if (v === null || v === undefined) {
                     return;
                 }
 
                 if (!chart) {
-                    chart = $.plot(elem, v , options);
+                    chart = $.plot(elem, v, options);
                     elem.show();
                 }
                 else {
@@ -79,7 +79,7 @@ app.directive('chart', function() {
                 }
             });
 
-            scope.$watch('invalidateChartDisplay', function(v) {
+            scope.$watch('invalidateChartDisplay', function (v) {
                 if (v && chart) {
                     var data = scope[attrs.ngModel];
                     chart.setData(data);
@@ -92,7 +92,7 @@ app.directive('chart', function() {
     };
 });
 
-app.controller('DashController', function($scope, Sources, Notes, Contributors, PlayerLibraries, ShowcaseLibraries) {
+app.controller('DashController', function ($scope, Sources, Notes, Contributors, PlayerLibraries, ShowcaseLibraries) {
     var player,
         controlbar,
         video,
@@ -161,12 +161,12 @@ app.controller('DashController', function($scope, Sources, Notes, Contributors, 
     }
 
     // from: https://gist.github.com/siongui/4969449
-    $scope.safeApply = function(fn) {
-      var phase = this.$root.$$phase;
-      if(phase == '$apply' || phase == '$digest')
-        this.$eval(fn);
-      else
-        this.$apply(fn);
+    $scope.safeApply = function (fn) {
+        var phase = this.$root.$$phase;
+        if (phase == '$apply' || phase == '$digest')
+            this.$eval(fn);
+        else
+            this.$apply(fn);
     };
 
     function getCribbedMetricsFor(type) {
@@ -187,7 +187,7 @@ app.controller('DashController', function($scope, Sources, Notes, Contributors, 
             movingRatio = {},
             droppedFramesValue = 0,
             requestsQueue,
-            fillmoving = function(type, Requests){
+            fillmoving = function (type, Requests) {
                 var requestWindow,
                     downloadTimes,
                     latencyTimes,
@@ -195,34 +195,34 @@ app.controller('DashController', function($scope, Sources, Notes, Contributors, 
 
                 requestWindow = Requests
                     .slice(-20)
-                    .filter(function(req){return req.responsecode >= 200 && req.responsecode < 300 && !!req._mediaduration && req.type === "MediaSegment" && req._stream === type;})
+                    .filter(function (req) { return req.responsecode >= 200 && req.responsecode < 300 && !!req._mediaduration && req.type === "MediaSegment" && req._stream === type; })
                     .slice(-4);
                 if (requestWindow.length > 0) {
 
-                    latencyTimes = requestWindow.map(function (req){ return Math.abs(req.tresponse.getTime() - req.trequest.getTime()) / 1000;});
+                    latencyTimes = requestWindow.map(function (req) { return Math.abs(req.tresponse.getTime() - req.trequest.getTime()) / 1000; });
 
                     movingLatency[type] = {
-                        average: latencyTimes.reduce(function(l, r) {return l + r;}) / latencyTimes.length,
-                        high: latencyTimes.reduce(function(l, r) {return l < r ? r : l;}),
-                        low: latencyTimes.reduce(function(l, r) {return l < r ? l : r;}),
+                        average: latencyTimes.reduce(function (l, r) { return l + r; }) / latencyTimes.length,
+                        high: latencyTimes.reduce(function (l, r) { return l < r ? r : l; }),
+                        low: latencyTimes.reduce(function (l, r) { return l < r ? l : r; }),
                         count: latencyTimes.length
                     };
 
-                    downloadTimes = requestWindow.map(function (req){ return Math.abs(req._tfinish.getTime() - req.tresponse.getTime()) / 1000;});
+                    downloadTimes = requestWindow.map(function (req) { return Math.abs(req._tfinish.getTime() - req.tresponse.getTime()) / 1000; });
 
                     movingDownload[type] = {
-                        average: downloadTimes.reduce(function(l, r) {return l + r;}) / downloadTimes.length,
-                        high: downloadTimes.reduce(function(l, r) {return l < r ? r : l;}),
-                        low: downloadTimes.reduce(function(l, r) {return l < r ? l : r;}),
+                        average: downloadTimes.reduce(function (l, r) { return l + r; }) / downloadTimes.length,
+                        high: downloadTimes.reduce(function (l, r) { return l < r ? r : l; }),
+                        low: downloadTimes.reduce(function (l, r) { return l < r ? l : r; }),
                         count: downloadTimes.length
                     };
 
-                    durationTimes = requestWindow.map(function (req){ return req._mediaduration;});
+                    durationTimes = requestWindow.map(function (req) { return req._mediaduration; });
 
                     movingRatio[type] = {
-                        average: (durationTimes.reduce(function(l, r) {return l + r;}) / downloadTimes.length) / movingDownload[type].average,
-                        high: durationTimes.reduce(function(l, r) {return l < r ? r : l;}) / movingDownload[type].low,
-                        low: durationTimes.reduce(function(l, r) {return l < r ? l : r;}) / movingDownload[type].high,
+                        average: (durationTimes.reduce(function (l, r) { return l + r; }) / downloadTimes.length) / movingDownload[type].average,
+                        high: durationTimes.reduce(function (l, r) { return l < r ? r : l; }) / movingDownload[type].low,
+                        low: durationTimes.reduce(function (l, r) { return l < r ? l : r; }) / movingDownload[type].high,
                         count: durationTimes.length
                     };
                 }
@@ -342,7 +342,7 @@ app.controller('DashController', function($scope, Sources, Notes, Contributors, 
 
                 delta = value - prevInfo[prop];
 
-                if (value instanceof(Date)) {
+                if (value instanceof (Date)) {
                     delta /= 1000;
                 }
 
@@ -362,7 +362,7 @@ app.controller('DashController', function($scope, Sources, Notes, Contributors, 
                     item.buffered.push(range);
                 }
             } else {
-                item.buffered = [{start: "-", end: "-", size: "-"}];
+                item.buffered = [{ start: "-", end: "-", size: "-" }];
             }
 
             for (k = 0; k < info.streamInfo.length; k++) {
@@ -545,7 +545,7 @@ app.controller('DashController', function($scope, Sources, Notes, Contributors, 
         $scope.showCharts = show;
     }
 
-    $scope.setBufferLevelChart = function(show) {
+    $scope.setBufferLevelChart = function (show) {
         $scope.showBufferLevel = show;
     }
 
@@ -634,7 +634,7 @@ app.controller('DashController', function($scope, Sources, Notes, Contributors, 
 
     function getUrlVars() {
         var vars = {};
-        var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+        var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
             vars[key] = value;
         });
         return vars;
@@ -673,6 +673,11 @@ app.controller('DashController', function($scope, Sources, Notes, Contributors, 
             protData = $scope.selectedItem.protData;
         }
         player.setProtectionData(protData);
+
+        // gg TBD support redirect to bypass XHR cross domain -->
+        $scope.selectedItem.url = $scope.selectedItem.url.replace("{host}", window.location.host);
+        // <-- gg TBD support redirect to bypass XHR cross domain
+
         player.attachSource($scope.selectedItem.url);
         player.setAutoSwitchQuality($scope.abrEnabled);
         player.enableBufferOccupancyABR($scope.bolaEnabled);
@@ -680,29 +685,29 @@ app.controller('DashController', function($scope, Sources, Notes, Contributors, 
         controlbar.enable();
 
         if ($scope.initialSettings.audio) {
-            player.setInitialMediaSettingsFor("audio", {lang: $scope.initialSettings.audio});
+            player.setInitialMediaSettingsFor("audio", { lang: $scope.initialSettings.audio });
         }
         if ($scope.initialSettings.video) {
-            player.setInitialMediaSettingsFor("video", {role: $scope.initialSettings.video});
+            player.setInitialMediaSettingsFor("video", { role: $scope.initialSettings.video });
         }
 
         $scope.manifestUpdateInfo = null;
     }
 
-    $scope.switchTrack = function(track, type) {
+    $scope.switchTrack = function (track, type) {
         if (!track || (track === player.getCurrentTrackFor(type))) return;
 
         player.setCurrentTrack(track);
     }
 
-    $scope.changeTrackSwitchMode = function(mode, type) {
+    $scope.changeTrackSwitchMode = function (mode, type) {
         player.setTrackSwitchModeFor(type, mode);
     }
 
-    $scope.initialSettings = {audio: null, video: null};
+    $scope.initialSettings = { audio: null, video: null };
     $scope.mediaSettingsCacheEnabled = true;
 
-    $scope.setMediaSettingsCacheEnabled = function(enabled) {
+    $scope.setMediaSettingsCacheEnabled = function (enabled) {
         $scope.mediaSettingsCacheEnabled = enabled;
         player.enableLastMediaSettingsCaching(enabled);
     }

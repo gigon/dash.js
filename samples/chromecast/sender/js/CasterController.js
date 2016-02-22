@@ -22,7 +22,7 @@ function CasterController($scope) {
         },
         {
             name: "Fraunhofer - HEACC 5.1 - 6 CH ID",
-             url: "http://dash.edgesuite.net/digitalprimates/fraunhofer/480p_video/heaac_5_1_with_video/6chId/6chId_480p_heaac5_1.mpd",
+            url: "http://dash.edgesuite.net/digitalprimates/fraunhofer/480p_video/heaac_5_1_with_video/6chId/6chId_480p_heaac5_1.mpd",
             isLive: false
         },
         {
@@ -328,6 +328,11 @@ function CasterController($scope) {
 
     $scope.doCast = function () {
         $scope.state = STATE_CASTING;
+
+        // gg TBD support redirect to bypass XHR cross domain -->
+        $scope.selectedItem.url = $scope.selectedItem.url.replace("{host}", window.location.host);
+        // <-- gg TBD support redirect to bypass XHR cross domain
+
         Caster.loadMedia($scope.selectedItem.url, $scope.selectedItem.isLive);
         $scope.playing = true;
     }
