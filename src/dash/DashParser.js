@@ -390,7 +390,7 @@ function DashParser(/*config*/) {
             //log("Converting from XML.");
 
             // TBD gg workaround -->
-            if (data.indexOf('xmlns:mspr=') < 0) {
+            if (data.indexOf('xmlns:mspr=') < 0 && data.indexOf('xmlns:cenc=') > 0) {
                 log('gg: adding mspr namespace to XML declaration');
                 var position = data.indexOf('xmlns:cenc=');
                 data = [data.slice(0, position), 'xmlns:mspr="urn:microsoft:playready" ', data.slice(position)].join('');

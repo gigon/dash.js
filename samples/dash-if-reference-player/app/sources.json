@@ -14,8 +14,16 @@
           "moreInfo": "TBD"
         },
         {
-          "name": "CISCO PR DASH VOD - bypass DRMS",
-          "url": "http://{host}/mediaserviceone.com/ac700ded-f577-4b4c-a3fc-1c629fd3fa9c/BigBuckBunny.ism/manifest(format=mpd-time-csf)"
+          "name": "CISCO DASH LINEAR CLEAR",
+          "url": "http://{host}/dash_server.com/data/dash_clear/master.mpd"
+        },
+        {
+          "name": "CISCO PR DASH VOD SINTEL - bypass DRMS",
+          "url": "http://{host}/mediaserviceone.com/449e99be-4298-46c9-ab82-a16023e2c250/sintel.ism/manifest(format=mpd-time-csf)"
+        },
+        {
+          "name": "CISCO PR DASH VOD 8sec- bypass DRMS",
+          "url": "http://{host}/mediaserviceone.com/2392645e-6a30-44fb-a384-3ae5f446df2f/BigBuckBunny.ism/manifest(format=mpd-time-csf)"
         },
         {
           "name": "CISCO PR DASH LINEAR",
